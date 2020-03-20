@@ -7,6 +7,9 @@ public class ComExtractor extends TextExtractor {
     public TextExtractor removeHeader() {
         int startOfTitle = story.text.indexOf("    Original Fiction") + "    Original Fiction\n".length();
         story.text = story.text.substring(startOfTitle).stripLeading();
+        if (story.text.startsWith("Wild Cards on Tor.com")) {
+            story.text = story.text.substring("Wild Cards on Tor.com".length()).stripLeading();
+        }
         return this;
     }
 

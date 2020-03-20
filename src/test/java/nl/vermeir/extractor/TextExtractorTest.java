@@ -83,4 +83,12 @@ public class TextExtractorTest {
         result.writeToFile();
         assertTrue(Files.exists(targetFile));
     }
+
+    @Test
+    public void testCOMWildCardsVersionRemoveHeader() throws Exception {
+        TextExtractor result = TextExtractor.loadText("src/test/resources/wildCardsTest/tor.com", TextSource.COM);
+        result.removeHeader();
+        String text = result.story.text;
+        assertTrue(text.startsWith("TitleGoesHere"));
+    }
 }

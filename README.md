@@ -19,3 +19,19 @@ mvn clean install
 
 where filename should end in .de (for text from tor-online.de) or .com (for text from tor.com)
  
+ 
+## blog
+
+references: https://martinfowler.com/bliki/FluentInterface.html
+idea: This way of writing fluent interfaces is not safe because the methods of  `TextExtractor` cannot be called in random order. 
+in fact the only way is this:
+
+```java
+        TextExtractor text = TextExtractor.loadText(filename, TextSource.whatTypeIsThis(filename))
+                .removeHeader()
+                .setTitleAndAuthor()
+                .removeSecondHeader()
+                .removeEndOfFooter();
+```
+
+or any prefix of the list.
