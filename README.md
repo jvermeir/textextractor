@@ -11,6 +11,12 @@ This file can then be imported into Calibre and then the process runs as before.
 mvn clean install
 ```
 
+crate a symlink in a folder that is in your path, e.g. in /usr/local/bin
+
+```bash
+ln -s /user/local/bin/torconvert  /Users/jan/dev/meuk/textextractor/bin/run.sh
+```
+
 ## run
 
 ```bash

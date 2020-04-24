@@ -15,10 +15,18 @@ public class DeExtractor extends TextExtractor {
 
     @Override
     public TextExtractor setTitleAndAuthor() {
-        int openingParenthesis = story.text.indexOf('(');
-        int closingParenthesis = story.text.indexOf(')');
-        story.title = story.text.substring(0, openingParenthesis-1).trim();
-        story.author = story.text.substring(openingParenthesis+1, closingParenthesis).trim();
+        String[] lines = story.text.split("\n");
+        String titleLine = lines[0];
+        int openingParenthesis = titleLine.indexOf('(');
+        int closingParenthesis = titleLine.indexOf(')');
+        if (openingParenthesis>0) {
+            story.title = story.text.substring(0, openingParenthesis - 1).trim();
+            story.author = story.text.substring(openingParenthesis + 1, closingParenthesis).trim();
+        } else {
+            String[] titleParts = titleLine.split("–");
+            story.title =  titleParts[0].trim();
+            story.author = lines[1];
+        }
         return this;
     }
 

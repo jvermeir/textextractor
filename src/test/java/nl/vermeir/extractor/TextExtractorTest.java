@@ -30,6 +30,14 @@ public class TextExtractorTest {
     }
 
     @Test
+    public void testDETitleSecondForm() throws Exception {
+        TextExtractor result = TextExtractor.loadText(DE_FILE_NAME, TextSource.DE);
+        result.removeHeader().setTitleAndAuthor();
+        assertEquals("TitleGoesHere", result.story.title);
+        assertEquals("AuthorGoesHere", result.story.author);
+    }
+
+    @Test
     public void testDESecondHeaderIsRemoved() throws Exception {
         TextExtractor result = TextExtractor.loadText(DE_FILE_NAME, TextSource.DE);
         result.removeHeader().setTitleAndAuthor().removeSecondHeader();
