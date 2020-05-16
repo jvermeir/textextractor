@@ -8,8 +8,13 @@ public class DeExtractor extends TextExtractor {
 
     @Override
     public TextExtractor removeHeader() {
-        int startOfTitle = story.text.indexOf("FICTION FRIDAY") + "FICTION FRIDAY\n".length();
-        story.text = story.text.substring(startOfTitle);
+        int startOfFictionFridayText = story.text.indexOf("FICTION FRIDAY");
+        int startOfFictionText = story.text.indexOf("FICTION");
+        int startOfText = startOfFictionText + "FICTION\n".length();
+        if (startOfFictionFridayText == startOfFictionText) {
+            startOfText = startOfFictionText + "FICTION FRIDAY\n".length();
+        }
+        story.text = story.text.substring(startOfText);
         return this;
     }
 
@@ -23,6 +28,7 @@ public class DeExtractor extends TextExtractor {
             story.title = story.text.substring(0, openingParenthesis - 1).trim();
             story.author = story.text.substring(openingParenthesis + 1, closingParenthesis).trim();
         } else {
+            titleLine = titleLine.replace('|', '–');
             String[] titleParts = titleLine.split("–");
             story.title =  titleParts[0].trim();
             story.author = lines[1];

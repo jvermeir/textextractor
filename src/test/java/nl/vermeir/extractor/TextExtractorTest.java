@@ -31,7 +31,15 @@ public class TextExtractorTest {
 
     @Test
     public void testDETitleSecondForm() throws Exception {
-        TextExtractor result = TextExtractor.loadText(DE_FILE_NAME, TextSource.DE);
+        TextExtractor result = TextExtractor.loadText("src/test/resources/tor2.de", TextSource.DE);
+        result.removeHeader().setTitleAndAuthor();
+        assertEquals("TitleGoesHere", result.story.title);
+        assertEquals("AuthorGoesHere", result.story.author);
+    }
+
+    @Test
+    public void testDETitleThirdForm() throws Exception {
+        TextExtractor result = TextExtractor.loadText("src/test/resources/tor3.de", TextSource.DE);
         result.removeHeader().setTitleAndAuthor();
         assertEquals("TitleGoesHere", result.story.title);
         assertEquals("AuthorGoesHere", result.story.author);
