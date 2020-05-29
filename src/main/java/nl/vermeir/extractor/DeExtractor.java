@@ -45,7 +45,7 @@ public class DeExtractor extends TextExtractor {
 
     @Override
     public TextExtractor removeEndOfFooter() {
-        int alleRechteVorbehalten = story.text.indexOf("Alle Rechte vorbehalten.");
+        int alleRechteVorbehalten = story.text.indexOf("Alle Rechte vorbehalten");
         story.text = story.text.substring(0, alleRechteVorbehalten).replaceFirst("\\s+$", "");;
         return this;
     }
