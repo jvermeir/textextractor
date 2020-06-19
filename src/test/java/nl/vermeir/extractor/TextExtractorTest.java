@@ -60,6 +60,13 @@ public class TextExtractorTest {
     }
 
     @Test
+    public void testDEFooterIsRemoved2ndForm() throws Exception {
+        TextExtractor result = TextExtractor.loadText("src/test/resources/tor4.de", TextSource.DE);
+        result.removeHeader().setTitleAndAuthor().removeSecondHeader().removeEndOfFooter();
+        assertTrue(result.story.text.endsWith("© 2019 by AuthorGoesHere"));
+    }
+
+    @Test
     public void testCOMRemoveHeader() throws Exception {
         TextExtractor result = TextExtractor.loadText(COM_FILE_NAME, TextSource.COM);
         result.removeHeader();
