@@ -31,7 +31,11 @@ public class DeExtractor extends TextExtractor {
             titleLine = titleLine.replace('|', '–');
             String[] titleParts = titleLine.split("–");
             story.title =  titleParts[0].trim();
-            story.author = lines[1];
+            if (titleParts[1].trim().startsWith("von ")) {
+                story.author = lines[1];
+            } else {
+                story.author = titleParts[1].trim();
+            }
         }
         return this;
     }
