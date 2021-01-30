@@ -14,7 +14,7 @@ mvn clean install
 create a symlink in a folder that is in your path, e.g. in /usr/local/bin
 
 ```bash
-ln -s /user/local/bin/torconvert  /Users/jan/dev/meuk/textextractor/bin/run.sh
+ln -s /Users/jan/dev/meuk/textextractor/bin/run.sh /user/local/bin/torconvert
 ```
 
 ## run
