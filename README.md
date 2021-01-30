@@ -11,10 +11,16 @@ This file can then be imported into Calibre and then the process runs as before.
 mvn clean install
 ```
 
-create a symlink in a folder that is in your path, e.g. in /usr/local/bin
+create a symlink in a folder that is in your path, e.g. in /user/local/bin
 
 ```bash
-ln -s /Users/jan/dev/meuk/textextractor/bin/run.sh /user/local/bin/torconvert
+ln -s /Users/jan/dev/meuk/textextractor/bin/run.sh /usr/local/bin/torconvert
+```
+
+create a symlink to copy new files to dropbox 
+
+```bash
+ln -s /Users/jan/dev/meuk/textextractor/bin/copyNew.sh /usr/local/bin/copynew
 ```
 
 ## run
