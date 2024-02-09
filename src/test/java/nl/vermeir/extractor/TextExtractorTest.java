@@ -80,21 +80,14 @@ public class TextExtractorTest {
         result.removeHeader().setTitleAndAuthor();
         assertEquals("TitleGoesHere", result.story.title);
         assertEquals("AuthorGoesHere", result.story.author);
-        assertTrue(result.story.text.startsWith("Illustrated by illustratorGoesHere"));
-    }
-
-    @Test
-    public void testCOMSecondHeaderIsRemoved() throws Exception {
-        TextExtractor result = TextExtractor.loadText(COM_FILE_NAME, TextSource.COM);
-        result.removeHeader().setTitleAndAuthor().removeSecondHeader();
-        assertTrue(result.story.text.startsWith("Illustrated by illustratorGoesHere"));
+        assertTrue(result.story.text.startsWith("Lorem ipsum dolor sit amet, consectetur adipis"));
     }
 
     @Test
     public void testCOMFooterIsRemoved() throws Exception {
         TextExtractor result = TextExtractor.loadText(COM_FILE_NAME, TextSource.COM);
         result.removeHeader().setTitleAndAuthor().removeSecondHeader().removeEndOfFooter();
-        assertTrue(result.story.text.endsWith("by AuthorGoesHere"));
+        assertTrue(result.story.text.endsWith("copyright © 2024 by AuthorGoesHere\n"));
     }
 
     @Test
@@ -105,13 +98,5 @@ public class TextExtractorTest {
         result.removeHeader().setTitleAndAuthor().removeSecondHeader().removeEndOfFooter();
         result.writeToFile();
         assertTrue(Files.exists(targetFile));
-    }
-
-    @Test
-    public void testCOMWildCardsVersionRemoveHeader() throws Exception {
-        TextExtractor result = TextExtractor.loadText("src/test/resources/wildCardsTest/tor.com", TextSource.COM);
-        result.removeHeader();
-        String text = result.story.text;
-        assertTrue(text.startsWith("TitleGoesHere"));
     }
 }

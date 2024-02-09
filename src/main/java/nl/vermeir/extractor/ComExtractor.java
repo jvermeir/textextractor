@@ -1,15 +1,20 @@
 package nl.vermeir.extractor;
 
+import java.util.Arrays;
+
 public class ComExtractor extends TextExtractor {
+
+    public static final String ORIGINAL_FICTION = "Original Fiction Science Fiction";
+    private static final String AUTHOR = "By ";
+    private static final String PUBLISHED = "Published on ";
+    public static final String ART_COPYRIGHT = "Art copyright";
+
     public ComExtractor(Story story) { super(story); }
 
     @Override
     public TextExtractor removeHeader() {
-        int startOfTitle = story.text.indexOf("    Original Fiction") + "    Original Fiction\n".length();
+        int startOfTitle = story.text.indexOf(ORIGINAL_FICTION) + (ORIGINAL_FICTION + "\n").length();
         story.text = story.text.substring(startOfTitle).stripLeading();
-        if (story.text.startsWith("Wild Cards on Tor.com")) {
-            story.text = story.text.substring("Wild Cards on Tor.com".length()).stripLeading();
-        }
         return this;
     }
 
@@ -17,9 +22,17 @@ public class ComExtractor extends TextExtractor {
     public TextExtractor setTitleAndAuthor() {
         String[] lines = story.text.split("\n");
         story.title = lines[0];
-        story.author = lines[1];
-        int startOfAuthor = story.text.indexOf(story.author) + story.author.length()+1;
+
+        int startOfAuthor = story.text.indexOf(AUTHOR) + AUTHOR.length();
         story.text = story.text.substring(startOfAuthor);
+        lines = story.text.split("\n");
+        story.author = lines[0];
+
+        int startOfPublished = story.text.indexOf(PUBLISHED);
+        story.text = story.text.substring(startOfPublished);
+        lines = story.text.split(System.lineSeparator());
+        story.text = String.join(System.lineSeparator(), Arrays.copyOfRange(lines, 1, lines.length));
+
         return this;
     }
 
@@ -30,10 +43,8 @@ public class ComExtractor extends TextExtractor {
 
     @Override
     public TextExtractor removeEndOfFooter() {
-        int positionOfShareText = story.text.lastIndexOf("Share:");
-        story.text = story.text.substring(0, positionOfShareText);
-        int positionOfAuthorCopyRight = story.text.lastIndexOf(story.author);
-        story.text = story.text.substring(0, positionOfAuthorCopyRight + story.author.length());
+        int positionOfArtCopyrightText = story.text.lastIndexOf(ART_COPYRIGHT);
+        story.text = story.text.substring(0, positionOfArtCopyrightText);
         return this;
     }
 }
