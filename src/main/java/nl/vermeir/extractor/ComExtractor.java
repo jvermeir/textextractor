@@ -5,6 +5,7 @@ import java.util.Arrays;
 public class ComExtractor extends TextExtractor {
 
     public static final String ORIGINAL_FICTION = "Original Fiction Science Fiction";
+    public static final String DARK_FICTION  = "Original Fiction Dark Fantasy";
     private static final String AUTHOR = "By ";
     private static final String PUBLISHED = "Published on ";
     public static final String ART_COPYRIGHT = "Art copyright";
@@ -13,7 +14,8 @@ public class ComExtractor extends TextExtractor {
 
     @Override
     public TextExtractor removeHeader() {
-        int startOfTitle = story.text.indexOf(ORIGINAL_FICTION) + (ORIGINAL_FICTION + "\n").length();
+        int startOfOriginalFiction = Math.max(story.text.indexOf(ORIGINAL_FICTION), story.text.indexOf(DARK_FICTION));
+        int startOfTitle = story.text.indexOf("\n", startOfOriginalFiction);
         story.text = story.text.substring(startOfTitle).stripLeading();
         return this;
     }
