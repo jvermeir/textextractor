@@ -6,9 +6,6 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class TextExtractor {
     public abstract TextExtractor removeHeader();
@@ -61,25 +58,93 @@ public abstract class TextExtractor {
                 .removeEndOfFooter();
         text.writeToFile();
 
-        poorMansCalibreSolution(text);
+        addToCalibre(text);
     }
 
-    private static void poorMansCalibreSolution(TextExtractor text) {
-        // Note: calling calibredb commands using Java's Process class doesn't seem to work.
-        // When called through Process, calibredb can't find files.
-
+    private static void addToCalibre(TextExtractor text) {
         String txtFileName = text.story.title + " - " + text.story.author + ".txt";
-        txtFileName = txtFileName.replaceAll(" ", "\\\\ ");
+
+        makeSureCalibreIsntRunning();
 
         String calibreConvert = "/Applications/calibre.app/Contents/MacOS/ebook-convert";
         String epubName = txtFileName.replace(".txt", ".epub");
-        String[] convertCommand = {calibreConvert, txtFileName,epubName };
+        String[] convertCommand = {calibreConvert, txtFileName, epubName };
         System.out.println(String.join(" ", convertCommand));
+        run(convertCommand);
 
         String calibredb = "/Applications/calibre.app/Contents/MacOS/calibredb";
-        String author = "\"" + text.story.author + "\"";
-        String title = "\"" + text.story.title + "\"";
+        String author = text.story.author;
+        String title = text.story.title;
         String[] addCommand = {calibredb, "add", "-a", author, "-t", title, epubName};
         System.out.println(String.join(" ", addCommand));
+        run(addCommand);
+    }
+
+    private static void run(String[] command) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(command);
+            Process process = pb.start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+            }
+
+            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    System.err.println(line);
+                }
+            }
+
+            int exitCode = process.waitFor();
+            System.out.println("Process exited with code: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void makeSureCalibreIsntRunning() {
+        // First check if the process is running
+        if (isProcessRunning("calibre")) {
+            System.out.println("Killing process: " + "calibre");
+            String[] command = {"killall", "calibre"};
+            run(command);
+
+            // Wait for the process to terminate
+            int maxAttempts = 10;
+            int attempts = 0;
+            while (isProcessRunning("calibre") && attempts < maxAttempts) {
+                System.out.println("Waiting for " + "calibre" + " to terminate...");
+                try {
+                    Thread.sleep(500); // Wait 500ms between checks
+                    attempts++;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Force kill if normal kill didn't work
+            if (isProcessRunning("calibre")) {
+                System.out.println("Force killing process: " + "calibre");
+                String[] forceCommand = {"killall", "-9", "calibre"};
+                run(forceCommand);
+            }
+        }
+    }
+
+    private static boolean isProcessRunning(String processName) {
+        try {
+            String[] command = {"pgrep", processName};
+            ProcessBuilder pb = new ProcessBuilder(command);
+            Process process = pb.start();
+
+            int exitCode = process.waitFor();
+            return exitCode == 0; // Exit code 0 means process was found
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
